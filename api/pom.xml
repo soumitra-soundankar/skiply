@@ -14,6 +14,7 @@
     <modules>
         <module>payment-service-api</module>
         <module>receipt-generator-api</module>
+        <module>fee-service-api</module>
     </modules>
 
 </project>
