@@ -17,6 +17,7 @@
     <modules>
         <module>api</module>
         <module>services</module>
+        <module>api-code</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -1,0 +1,42 @@
+openapi: 3.0.1
+info:
+  title: Fee API
+  description: API to support fee details
+  version: ${proect.version}
+
+paths:
+  /fees/{grade}:
+    get:
+      tags:
+        - Get Fees by Grade
+      operationId: getFeesBygrade
+      Summary: Returns fees by Grade
+      parameters:
+        - name: grade
+          in: path
+          description: Grade
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "OK"
+          schema:
+            $ref: "#/definitions/FeeDetails"
+
+FeeDetails:
+  type: "object"
+  title: ""
+  properties:
+    data:
+      type: "array"
+      items:
+        $ref: "#definitions/Fee"
+
+Fee:
+  type: "object"
+  properties:
+    feeType:
+      type: "string"
+    feeAmount:
+      type: "number"
