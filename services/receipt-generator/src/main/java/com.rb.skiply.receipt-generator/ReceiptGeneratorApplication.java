@@ -1,13 +1,13 @@
-package com.rb.fee_service;
+package com.rb.skiply.student_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FeeServiceApplication {
+public class ReceiptGeneratorApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FeeServiceApplication.class, args);
+		SpringApplication.run(StudentServiceApplication.class, args);
 	}
 
 }

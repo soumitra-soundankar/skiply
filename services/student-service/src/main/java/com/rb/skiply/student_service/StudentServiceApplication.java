@@ -1,13 +1,13 @@
-package com.rb.payment_service;
+package com.rb.skiply.student_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PaymentServiceApplication {
+public class StudentServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PaymentServiceApplication.class, args);
+		SpringApplication.run(StudentServiceApplication.class, args);
 	}
 
 }

@@ -15,6 +15,7 @@
         <module>student-service</module>
         <module>fee-service</module>
         <module>payment-service</module>
+        <module>receipt-generator</module>
     </modules>
 
 </project>

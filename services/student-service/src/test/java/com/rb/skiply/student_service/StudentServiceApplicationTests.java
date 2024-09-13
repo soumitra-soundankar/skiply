@@ -1,4 +1,4 @@
-package com.rb.fee_service;
+package com.rb.skiply.student_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
