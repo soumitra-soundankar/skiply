@@ -1,4 +1,4 @@
-package com.rb.student_service;
+package com.rb.fee_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
