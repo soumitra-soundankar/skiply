@@ -11,5 +11,9 @@
     <packaging>pom</packaging>
     <artifactId>api</artifactId>
 
+    <modules>
+        <module>payment-service-api</module>
+        <module>receipt-generator-api</module>
+    </modules>
 
 </project>
