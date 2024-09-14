@@ -5,6 +5,7 @@ import com.rb.skiply.student_fee.openapi.model.StudentFeeDetails;
 import com.rb.skiply.student_service.entity.Student;
 import com.rb.skiply.student_service.entity.StudentFee;
 import com.rb.skiply.student_service.entity.StudentFeeHistory;
+import com.rb.skiply.student_service.exception.StudentNotFound;
 import com.rb.skiply.student_service.mapper.FeeMapper;
 import com.rb.skiply.student_service.mapper.StudentFeeHistoryMapper;
 import com.rb.skiply.student_service.port.FeeClientAdapter;
@@ -12,14 +13,16 @@ import com.rb.skiply.student_service.repository.StudentFeeHistoryRepository;
 import com.rb.skiply.student_service.repository.StudentFeeRepository;
 import com.rb.skiply.student_service.repository.StudentRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class StudentFeeServiceImpl implements  StudentFeeService{
 
     private final StudentFeeHistoryRepository studentFeeHistoryRepository;
@@ -36,23 +39,33 @@ public class StudentFeeServiceImpl implements  StudentFeeService{
 
 
     @Override
-    public StudentFeeDetails getStudentFees(final String studentId) {
+    public StudentFeeDetails getStudentFees(final String studentId) throws StudentNotFound {
         final StudentFeeDetails studentFeeDetails = new StudentFeeDetails();
         final StudentFeeHistory studentFeeHistory = new StudentFeeHistory();
-        final Optional<Student> student = Optional.of(studentRepository.findByStudentId(studentId));
-        final StudentFeeHistory feeHistory = studentFeeHistoryRepository.findByStudentId(studentId);
+        final Student student = studentRepository.findByStudentId(studentId);
+
+        if(student == null) {
+            throw new StudentNotFound("Student with id %s not found"); //TODO: User StringUtils.format
+        }
+
+        final StudentFeeHistory feeHistory = studentFeeHistoryRepository.findByStudentId(studentId, LocalDate.now().getYear());
+
+        if(feeHistory == null) {
+            log.info("Student {} fee record not found", studentId);
+        }
 
         if(feeHistory != null) {
-            prepareStudentFeeDetails(studentFeeDetails, student.get(), feeHistory);
+            prepareStudentFeeDetails(studentFeeDetails, student, feeHistory);
             return studentFeeDetails;
         }
 
-        final FeeDetails feeDetails = feeClientAdapter.getFeesByGrade(student.get().getGrade());
+        final FeeDetails feeDetails = feeClientAdapter.getFeesByGrade(student.getGrade());
         List<StudentFee> studentFeeList = studentFeeRepository.saveAll(mapper.toStudentFees(feeDetails.getData()));
         studentFeeHistory.setFees(studentFeeList);
         studentFeeHistory.setStudentId(studentId);
+        studentFeeHistory.setAcademicYear(LocalDate.now());
         final StudentFeeHistory studentFeeHistorySaved = studentFeeHistoryRepository.save(studentFeeHistory);
-        prepareStudentFeeDetails(studentFeeDetails, student.get(), studentFeeHistorySaved);
+        prepareStudentFeeDetails(studentFeeDetails, student, studentFeeHistorySaved);
         return studentFeeDetails;
     }
 
