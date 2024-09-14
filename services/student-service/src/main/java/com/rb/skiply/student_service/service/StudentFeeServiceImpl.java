@@ -8,6 +8,7 @@ import com.rb.skiply.student_service.entity.StudentFeeHistory;
 import com.rb.skiply.student_service.mapper.FeeMapper;
 import com.rb.skiply.student_service.mapper.StudentFeeHistoryMapper;
 import com.rb.skiply.student_service.port.FeeClientAdapter;
+import com.rb.skiply.student_service.repository.StudentFeeHistoryRepository;
 import com.rb.skiply.student_service.repository.StudentFeeRepository;
 import com.rb.skiply.student_service.repository.StudentRepository;
 import lombok.AllArgsConstructor;
@@ -21,9 +22,11 @@ import java.util.Optional;
 @AllArgsConstructor
 public class StudentFeeServiceImpl implements  StudentFeeService{
 
-    private final StudentFeeRepository studentFeeRepository;
+    private final StudentFeeHistoryRepository studentFeeHistoryRepository;
 
     private final StudentRepository studentRepository;
+
+    private final StudentFeeRepository studentFeeRepository;
 
     private final FeeClientAdapter feeClientAdapter;
 
@@ -35,19 +38,20 @@ public class StudentFeeServiceImpl implements  StudentFeeService{
     @Override
     public StudentFeeDetails getStudentFees(final String studentId) {
         final StudentFeeDetails studentFeeDetails = new StudentFeeDetails();
+        final StudentFeeHistory studentFeeHistory = new StudentFeeHistory();
         final Optional<Student> student = Optional.of(studentRepository.findByStudentId(studentId));
-        final Optional<StudentFeeHistory> feeHistory = Optional.of(studentFeeRepository.findByStudentId(studentId));
+        final StudentFeeHistory feeHistory = studentFeeHistoryRepository.findByStudentId(studentId);
 
-        if(feeHistory.isPresent()) {
-            final StudentFeeHistory studentFeeHistory = feeHistory.get();
-            prepareStudentFeeDetails(studentFeeDetails, student.get(), studentFeeHistory);
+        if(feeHistory != null) {
+            prepareStudentFeeDetails(studentFeeDetails, student.get(), feeHistory);
             return studentFeeDetails;
         }
 
         final FeeDetails feeDetails = feeClientAdapter.getFeesByGrade(student.get().getGrade());
-        final StudentFeeHistory studentFeeHistory = mapper.toStudentFeeHistory(feeDetails.getData());
+        List<StudentFee> studentFeeList = studentFeeRepository.saveAll(mapper.toStudentFees(feeDetails.getData()));
+        studentFeeHistory.setFees(studentFeeList);
         studentFeeHistory.setStudentId(studentId);
-        final StudentFeeHistory studentFeeHistorySaved = studentFeeRepository.save(studentFeeHistory);
+        final StudentFeeHistory studentFeeHistorySaved = studentFeeHistoryRepository.save(studentFeeHistory);
         prepareStudentFeeDetails(studentFeeDetails, student.get(), studentFeeHistorySaved);
         return studentFeeDetails;
     }

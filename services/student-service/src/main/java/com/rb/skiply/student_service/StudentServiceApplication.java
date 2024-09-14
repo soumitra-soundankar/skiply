@@ -12,4 +12,8 @@ public class StudentServiceApplication {
 		SpringApplication.run(StudentServiceApplication.class, args);
 	}
 
+	@Bean
+	public RestClient restClient() {
+		return RestClient.builder().build();
+	}
 }

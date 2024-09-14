@@ -10,14 +10,8 @@ import java.util.List;
 @Component
 public class StudentFeeHistoryMapper {
 
-    public StudentFeeHistory toStudentFeeHistory(List<Fee> fees) {
-        StudentFeeHistory studentFeeHistory = new StudentFeeHistory();
-        studentFeeHistory.setFees(toStudentFees(fees));
-        return studentFeeHistory;
-    }
 
-
-    private List<StudentFee> toStudentFees(List<Fee> fees) {
+    public List<StudentFee> toStudentFees(List<Fee> fees) {
 
         return fees.stream()
                 .map(fee -> {

@@ -11,7 +11,7 @@ public class FeeClientAdapter {
 
     private final RestClient restClient;
 
-    private static final String FEE_SERVICE_BASE_URL="http://localhost:8081/fee/";
+    private static final String FEE_SERVICE_BASE_URL="http://localhost:8080/fee/";
 
     public FeeDetails getFeesByGrade(final String grade) {
         return restClient.get()
