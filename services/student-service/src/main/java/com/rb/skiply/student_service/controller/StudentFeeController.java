@@ -2,6 +2,7 @@ package com.rb.skiply.student_service.controller;
 
 import com.rb.skiply.student_fee.openapi.api.StudentApi;
 import com.rb.skiply.student_fee.openapi.model.StudentFeeDetails;
+import com.rb.skiply.student_fee.openapi.model.StudentFeePaymentRequest;
 import com.rb.skiply.student_service.exception.StudentNotFound;
 import com.rb.skiply.student_service.service.StudentFeeService;
 import lombok.AllArgsConstructor;
@@ -21,5 +22,10 @@ public class StudentFeeController implements StudentApi {
         } catch (StudentNotFound e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public ResponseEntity<Void> initiateFeePayment(String studentId, StudentFeePaymentRequest studentFeePaymentRequest) {
+        return null;
     }
 }

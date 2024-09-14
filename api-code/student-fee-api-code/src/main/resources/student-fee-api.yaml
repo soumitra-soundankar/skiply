@@ -23,8 +23,66 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StudentFeeDetails'
+
+  '/student/{studentId}/fee:payment':
+    post:
+      operationId: initiateFeePayment
+      summary: Initiate a payment
+      parameters:
+        - name: studentId
+          in: path
+          description: Unique StudentId i.e Roll-number
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentFeePaymentRequest"
+      responses:
+        '201':
+          description: Created
+
+  '/student/{studentId}/fee:payment-status':
+    post:
+      operationId: initiateFeePayment
+      summary: Initiate a payment
+      parameters:
+        - name: studentId
+          in: path
+          description: Unique StudentId i.e Roll-number
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentFeePaymentStatusRequest"
+      responses:
+        '201':
+          description: Created
+
 components:
   schemas:
+    StudentFeePaymentStatusRequest:
+      type: object
+      properties:
+        status:
+          type: string
+
+    StudentFeePaymentRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+        cardNumber:
+          type: string
+        cardType:
+          type: string
+
+
     StudentFeeDetails:
       type: object
       properties:

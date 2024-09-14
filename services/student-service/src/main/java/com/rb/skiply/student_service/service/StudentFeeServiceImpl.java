@@ -2,6 +2,7 @@ package com.rb.skiply.student_service.service;
 
 import com.rb.skiply.fee_service.openapi.model.FeeDetails;
 import com.rb.skiply.student_fee.openapi.model.StudentFeeDetails;
+import com.rb.skiply.student_fee.openapi.model.StudentFeePaymentRequest;
 import com.rb.skiply.student_service.entity.Student;
 import com.rb.skiply.student_service.entity.StudentFee;
 import com.rb.skiply.student_service.entity.StudentFeeHistory;
@@ -23,7 +24,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class StudentFeeServiceImpl implements  StudentFeeService{
+public class StudentFeeServiceImpl implements  StudentFeeService {
 
     private final StudentFeeHistoryRepository studentFeeHistoryRepository;
 
@@ -67,6 +68,11 @@ public class StudentFeeServiceImpl implements  StudentFeeService{
         final StudentFeeHistory studentFeeHistorySaved = studentFeeHistoryRepository.save(studentFeeHistory);
         prepareStudentFeeDetails(studentFeeDetails, student, studentFeeHistorySaved);
         return studentFeeDetails;
+    }
+
+    @Override
+    public StudentFeeService initiatePayment(String studentId, StudentFeePaymentRequest studentFeePaymentRequest) {
+        return null;
     }
 
 
