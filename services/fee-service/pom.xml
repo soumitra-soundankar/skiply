@@ -48,6 +48,11 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.rb.skiply.api-code</groupId>
+			<artifactId>fee-service-api-code</artifactId>
+			<version>1.1-SNAPSHOT</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.h2database</groupId>
