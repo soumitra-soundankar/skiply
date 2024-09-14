@@ -1,16 +1,16 @@
 package com.rb.skiply.fee_service.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table
+@Getter
+@Setter
 @NoArgsConstructor
-@Data
 @AllArgsConstructor
 public class Fee {
 
@@ -21,8 +21,11 @@ public class Fee {
 
     private BigDecimal feeAmount;
 
-    @ManyToOne
-    @JoinColumn(name = "grade_id")
-    private Grade grade;
+    @ManyToMany
+    @JoinTable(
+            name = "fee_grade",
+            joinColumns = @JoinColumn(name = "fee_id"),
+            inverseJoinColumns = @JoinColumn(name = "grade_id"))
+    private List<Grade> grade;
 
 }

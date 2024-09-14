@@ -1,25 +1,24 @@
 package com.rb.skiply.fee_service.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 public class Grade {
 
     @Id
     private Integer id;
 
-    private String grade;
+    private String gradeName;
 
-    @OneToMany(mappedBy ="grade")
-    private List<Fee> fees;
+    @ManyToMany(mappedBy = "grade")
+    private List<Fee> fee;
 
 }

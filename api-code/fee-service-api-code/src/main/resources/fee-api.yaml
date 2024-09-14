@@ -5,11 +5,11 @@ info:
   version: ${proect.version}
 
 paths:
-  /fees/{grade}:
+  /fee/{grade}:
     get:
       tags:
         - Get Fees by Grade
-      operationId: getFeesBygrade
+      operationId: getFeesByGrade
       summary: "Returns fees by Grade"
       parameters:
         - name: grade
@@ -25,6 +25,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FeeDetails"
+  /fee:
+    post:
+      tags:
+        - Add Fees by Grade
+      operationId: addFeesBygrade
+      summary: "Add fees by Grade"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeeDetails"
+
 components:
   schemas:
     FeeDetails:
