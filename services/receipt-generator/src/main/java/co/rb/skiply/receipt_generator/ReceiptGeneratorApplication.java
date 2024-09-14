@@ -1,4 +1,4 @@
-package com.rb.skiply.student_service;
+package co.rb.skiply.receipt_generator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ReceiptGeneratorApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(StudentServiceApplication.class, args);
+		SpringApplication.run(ReceiptGeneratorApplication.class, args);
 	}
 
 }
