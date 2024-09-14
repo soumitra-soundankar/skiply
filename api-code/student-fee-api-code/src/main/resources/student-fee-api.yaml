@@ -1,0 +1,49 @@
+openapi: 3.0.1
+info:
+  title: FeeStudent API
+  description: API to support student fee collection
+  version: ${project.version}
+
+paths:
+  /student/{studentId}/fee:
+    get:
+      operationId: getFeesByStudentId
+      summary: Return fees applicable for student
+      parameters:
+        - name: studentId
+          in: path
+          description: Unique StudentId i.e Roll-number
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentFeeDetails'
+components:
+  schemas:
+    StudentFeeDetails:
+      type: object
+      properties:
+        studentName:
+          type: string
+        studentId:
+          type: string
+        totalPendingAmount:
+          type: number
+        fees:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Fee'
+
+    Fee:
+      type: object
+      properties:
+        feeType:
+          type: string
+        feeAmount:
+          type: number
+

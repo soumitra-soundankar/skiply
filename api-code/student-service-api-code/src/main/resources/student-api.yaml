@@ -1,0 +1,67 @@
+openapi: 3.0.1
+info:
+  title: Student API
+  description: API to support student service
+  version: ${project.version}
+
+paths:
+  /student:
+    post:
+      operationId: enrollStudent
+      summary: Enroll a student
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentRequest"
+      responses:
+        '201':
+          description: Created
+
+components:
+  schemas:
+    StudentRequest:
+      type: object
+      required:
+        - studentName
+        - studentId
+        - grade
+        - mobileNumber
+        - schoolName
+      properties:
+        studentName:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: |
+            Name of the student
+        studentId:
+          type: string
+          minLength: 4
+          maxLength: 32
+          description: |
+            Unique Student Id (roll number)
+        grade:
+          type: string
+          enum:
+            - KG1
+            - KG2
+            - Grade_1
+            - Grade_2
+            - Grade_3
+            - Grade_4
+            - Grade_5
+          description: |
+            Grade in which student is studying
+        mobileNumber:
+          type: string
+          minLength: 10
+          maxLength: 10
+          description: |
+            Registered mobile number
+        schoolName:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: |
+            Name of school
