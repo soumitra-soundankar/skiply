@@ -5,6 +5,8 @@ import com.rb.skiply.student_service.openapi.model.StudentRequest;
 import com.rb.skiply.student_service.repository.StudentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -13,6 +15,7 @@ public class StudentEnrollServiceImpl implements StudentEnrollService {
     private final StudentRepository studentRepository;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Student enrollStudent(StudentRequest studentRequest) {
         final Student student = convertStudentRequest(studentRequest);
         final Student studentSaved = studentRepository.save(student);
@@ -32,6 +35,7 @@ public class StudentEnrollServiceImpl implements StudentEnrollService {
 
     @Override
     public Student updateStudent(StudentRequest studentRequest) {
+        //Not implemented
         return null;
     }
 }

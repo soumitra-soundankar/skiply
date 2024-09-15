@@ -7,6 +7,8 @@ import com.rb.skiply.fee_service.openapi.model.FeeDetails;
 import com.rb.skiply.fee_service.repository.FeeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class FeeServiceImpl implements FeeService {
     private final FeeDetailsMapper feeDetailsMapper;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW,readOnly = true)
     public FeeDetails feesByGrade(String gradeName) {
         final Grade grade = gradeService.findGradeByName(gradeName);
         List<Fee> feeList = feeRepository.findByGrade(grade);

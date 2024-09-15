@@ -13,6 +13,8 @@ import com.rb.skiply.receipt_generator.openapi.model.PaymentReceiptRequest;
 import com.rb.skiply.receipt_generator.openapi.model.PaymentReceiptResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,12 +33,14 @@ public class ReceiptServiceImpl implements ReceiptService {
     private PaymentReceiptResponseMapper paymentReceiptResponseMapper;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public PaymentReceiptResponse getReceiptByPaymentReference(final String paymentReference) throws ReceiptNotFoundException {
         Receipt receipt = receiptRepository.findByPaymentReference(paymentReference);
         return paymentReceiptResponseMapper.toPaymentReceiptResponse(receipt);
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public FeePaymentResponse storeReceipt(final PaymentReceiptRequest paymentReceiptRequest) {
         Receipt receipt = receiptMapper.toReceipt(paymentReceiptRequest);
         Receipt receiptSaved = receiptRepository.save(receipt);

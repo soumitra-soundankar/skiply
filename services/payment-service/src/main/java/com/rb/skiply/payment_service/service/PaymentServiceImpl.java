@@ -44,6 +44,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     public StudentFeePaymentResponse getPaymentStatus(String paymentReference) {
         Payment payment = paymentRepository.findByPaymentReference(paymentReference);
         return studentFeePaymentResponseMapper.toStudentFeePaymentResponse(payment);

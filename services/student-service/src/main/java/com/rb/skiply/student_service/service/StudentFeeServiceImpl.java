@@ -53,19 +53,20 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public StudentFeeDetails getStudentFees(final String studentId) throws StudentNotFound {
         final StudentFeeDetails studentFeeDetails = new StudentFeeDetails();
         final StudentFeeHistory studentFeeHistory = new StudentFeeHistory();
         final Student student = studentRepository.findByStudentId(studentId);
 
         if(student == null) {
-            throw new StudentNotFound("Student with id %s not found"); //TODO: User StringUtils.format
+            throw new StudentNotFound("Student with id %s not found."); //TODO: User StringUtils.format
         }
 
         final StudentFeeHistory feeHistory = studentFeeHistoryRepository.findByStudentId(studentId, LocalDate.now().getYear());
 
         if(feeHistory == null) {
-            log.info("Student {} fee record not found", studentId);
+            log.info("Student {} fee record not found, may be first time on the platform.", studentId);
         }
 
         if(feeHistory != null) {
