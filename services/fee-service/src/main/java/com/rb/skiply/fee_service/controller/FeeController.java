@@ -15,11 +15,6 @@ public class FeeController implements FeeApi {
     private final FeeService feeService;
 
     @Override
-    public ResponseEntity<FeeDetails> addFeesBygrade() {
-        return null;
-    }
-
-    @Override
     public ResponseEntity<FeeDetails> getFeesByGrade(final String grade) {
         return ResponseEntity.ok(
                 feeService.feesByGrade(grade));

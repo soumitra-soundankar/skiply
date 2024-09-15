@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <artifactId>services</artifactId>
+    <version>0.0.0</version>
 
     <modules>
         <module>student-service</module>
