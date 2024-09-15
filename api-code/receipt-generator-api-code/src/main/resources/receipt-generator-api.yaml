@@ -1,0 +1,115 @@
+openapi: 3.0.1
+info:
+  title: Receipt Generator API
+  description: API to support receipt generation
+  version: ${project.version}
+
+paths:
+  '/receipt/{paymentReference}':
+    get:
+      operationId: getReceipt
+      summary: Payment Status
+      parameters:
+        - name: paymentReference
+          in: path
+          description: Unique paymentReference
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentReceiptResponse'
+
+  '/receipt:record':
+    post:
+      operationId: storeReceiptData
+      summary: Store a payment receipt
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentReceiptRequest"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeePaymentResponse'
+
+
+components:
+  schemas:
+    PaymentReceiptRequest:
+      type: object
+      required:
+        - totalAmount
+        - studentId
+        - studentName
+        - paymentReference
+        - cardNumber
+        - cardType
+        - feeDetails
+      properties:
+        paymentDateTime:
+          type: string
+          format: date-time
+        totalAmount:
+          type: number
+        studentId:
+          type: string
+        studentName:
+          type: string
+        paymentReference:
+          type: string
+        cardNumber:
+          type: string
+        cardType:
+          type: string
+        feeDetails:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FeePayment"
+
+    FeePayment:
+      type: object
+      properties:
+        feeType:
+          type: string
+        feeAmount:
+          type: number
+
+    FeePaymentResponse:
+      type: object
+      properties:
+        studentId:
+          type: string
+        receiptNumber:
+          type: string
+
+    PaymentReceiptResponse:
+      type: object
+      properties:
+        totalAmount:
+          type: number
+        studentId:
+          type: string
+        studentName:
+          type: string
+        paymentReference:
+          type: string
+        cardNumber:
+          type: string
+        cardType:
+          type: string
+        paymentDateTime:
+          type: string
+          format: date-time
+        feeDetails:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FeePayment"
