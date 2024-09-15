@@ -13,6 +13,7 @@
         <module>fee-service-api-code</module>
         <module>student-service-api-code</module>
         <module>student-fee-api-code</module>
+        <module>payment-service-api-code</module>
     </modules>
 
 

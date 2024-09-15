@@ -2,16 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.rb.skiply.api-code</groupId>
-    <artifactId>payment-service-api-code</artifactId>
+    <artifactId>student-fee-api-code</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -64,11 +64,11 @@
                                 <dateLibrary>java8</dateLibrary>
                             </configOptions>
                             <inputSpec>
-                                ${project.basedir}/src/main/resources/payment-api.yaml
+                                ${project.basedir}/src/main/resources/student-fee-api.yaml
                             </inputSpec>
                             <generatorName>spring</generatorName>
-                            <apiPackage>com.rb.skiply.payment_service.openapi.api</apiPackage>
-                            <modelPackage>com.rb.skiply.payment_service.openapi.model</modelPackage>
+                            <apiPackage>com.rb.skiply.student_fee.openapi.api</apiPackage>
+                            <modelPackage>com.rb.skiply.student_fee.openapi.model</modelPackage>
                         </configuration>
                     </execution>
                 </executions>

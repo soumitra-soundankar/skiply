@@ -1,0 +1,83 @@
+openapi: 3.0.1
+info:
+  title: Payment API
+  description: API to support student fee collection
+  version: ${project.version}
+
+paths:
+  '/payment/{paymentReference}:status':
+    get:
+      operationId: getPaymentStatus
+      summary: Payment Status
+      parameters:
+        - name: paymentReference
+          in: path
+          description: Unique paymentReference
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentFeePaymentResponse'
+
+  '/payment':
+    post:
+      operationId: registerPayment
+      summary: Register a payment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentFeePaymentRequest"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentFeePaymentResponse'
+
+
+components:
+  schemas:
+    StudentFeePaymentRequest:
+      type: object
+      required:
+        - totalAmount
+        - cardNumber
+        - cardType
+        - feeDetails
+      properties:
+        totalAmount:
+          type: number
+        cardNumber:
+          type: string
+        cardType:
+          type: string
+        feeDetails:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FeePayment"
+
+    FeePayment:
+      type: object
+      properties:
+        feeType:
+          type: string
+        feeAmount:
+          type: number
+
+    StudentFeePaymentResponse:
+      type: object
+      properties:
+        studentId:
+          type: string
+        paymentReference:
+          type: string
+        paymentStatus:
+          type: string
+
