@@ -1,19 +1,17 @@
-package com.rb.skiply.student_service.entity;
+package com.rb.skiply.payment_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum FeePaymentStatus {
+public enum PaymentStatus {
 
-    PENDING("Pending"),
-    INITIATED("Initiated"),
-    SUBMITTED_TO_HOST("SubmittedToHost"),
-    WAITING_FROM_HOST("WaitingFromHost"),
+    SUBMITTED_TO_HOST("SendToHost"),
+    WAITING_FOR_HOST("WithHost"),
     SUCCESS("Success"),
-    FAILED("Failed");
+    Failed("Failed");
 
     private final String status;
 
-    FeePaymentStatus(String status) {
+    PaymentStatus(String status) {
         this.status = status;
     }
 
@@ -26,4 +24,5 @@ public enum FeePaymentStatus {
     public String toString() {
         return String.valueOf(status);
     }
+
 }

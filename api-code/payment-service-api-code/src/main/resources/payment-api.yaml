@@ -58,6 +58,8 @@ components:
           type: string
         cardType:
           type: string
+        studentId:
+          type: string
         feeDetails:
           type: "array"
           items:
