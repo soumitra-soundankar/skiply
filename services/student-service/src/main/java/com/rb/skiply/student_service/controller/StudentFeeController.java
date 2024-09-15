@@ -6,6 +6,7 @@ import com.rb.skiply.student_fee.openapi.model.StudentFeePaymentRequest;
 import com.rb.skiply.student_service.exception.StudentNotFound;
 import com.rb.skiply.student_service.service.StudentFeeService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +21,9 @@ public class StudentFeeController implements StudentApi {
         try {
             return ResponseEntity.ok(studentFeeService.getStudentFees(studentId));
         } catch (StudentNotFound e) {
-            throw new RuntimeException(e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
