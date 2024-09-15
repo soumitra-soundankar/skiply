@@ -17,9 +17,13 @@ public class PaymentController implements PaymentApi {
     private final PaymentService paymentService;
 
     @Override
-    public ResponseEntity<StudentFeePaymentResponse> getPaymentStatus(String paymentReference) {
-
-        return null;
+    public ResponseEntity<StudentFeePaymentResponse> getPaymentStatus(final String paymentReference) {
+        try{
+            return new ResponseEntity<>(paymentService.getPaymentStatus(paymentReference) ,HttpStatus.OK);
+        }
+        catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override
@@ -28,7 +32,6 @@ public class PaymentController implements PaymentApi {
             return new ResponseEntity<>(paymentService.registerPayment(studentFeePaymentRequest), HttpStatus.OK);
         }
         catch(Exception e) {
-            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

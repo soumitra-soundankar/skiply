@@ -3,6 +3,7 @@ package com.rb.skiply.payment_service.event_processor;
 import com.rb.skiply.payment_service.entity.Payment;
 import com.rb.skiply.payment_service.entity.PaymentStatus;
 import com.rb.skiply.payment_service.events.PaymentInitiationEvent;
+import com.rb.skiply.payment_service.port.ReceiptClientAdapter;
 import com.rb.skiply.payment_service.port.StudentClientAdapter;
 import com.rb.skiply.payment_service.repository.PaymentRepository;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 public class PaymentEventProcessor {
 
     private final StudentClientAdapter studentClientAdapter;
+
+    private final ReceiptClientAdapter receiptClientAdapter;
 
     private final PaymentRepository paymentRepository;
 
@@ -33,5 +36,6 @@ public class PaymentEventProcessor {
         payment.setPaymentStatus(PaymentStatus.SUCCESS);
         paymentRepository.save(payment);
         log.info("Calling student-service to update payment status");
+        log.info("Calling receipt-generator to record receipt");
     }
 }

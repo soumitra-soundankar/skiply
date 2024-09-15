@@ -45,6 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public StudentFeePaymentResponse getPaymentStatus(String paymentReference) {
-        return null;
+        Payment payment = paymentRepository.findByPaymentReference(paymentReference);
+        return studentFeePaymentResponseMapper.toStudentFeePaymentResponse(payment);
     }
 }
