@@ -1,0 +1,64 @@
+{
+	"info": {
+		"_postman_id": "9488199e-3f6c-44e8-bec7-c7981cc93e5e",
+		"name": "skiply",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "5309578"
+	},
+	"item": [
+		{
+			"name": "Enroll student",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"studentName\": \"Soumitra\",\r\n  \"studentId\": \"PLN1249\",\r\n  \"grade\": \"KG1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8081/student"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Pending fees",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8081/student/PLN1249/fee:pending"
+			},
+			"response": []
+		},
+		{
+			"name": "Initiate a payment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"cardNumber\": \"1234-4567-7890-1234\",\r\n  \"cardType\": \"Mastercard\",\r\n  \"feeDetails\": [\r\n    {\r\n      \"feeType\": \"Tuition\",\r\n      \"feeAmount\": 100,\r\n      \"customAmount\": 100\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8081/student/PLN1249/fee:payment"
+			},
+			"response": []
+		},
+		{
+			"name": "Get the receipt",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8083/receipt/{paymentRef}"
+			},
+			"response": []
+		}
+	]
+}
