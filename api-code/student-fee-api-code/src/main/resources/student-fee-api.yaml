@@ -5,9 +5,28 @@ info:
   version: ${project.version}
 
 paths:
-  /student/{studentId}/fee:
+  '/student/{studentId}/fee:all':
     get:
-      operationId: getFeesByStudentId
+      operationId: getAllFeesByStudentIdForTheYear
+      summary: Return fees applicable for student
+      parameters:
+        - name: studentId
+          in: path
+          description: Unique StudentId i.e Roll-number
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentFeeDetails'
+
+  '/student/{studentId}/fee:pending':
+    get:
+      operationId: getPendingFeesByStudentId
       summary: Return fees applicable for student
       parameters:
         - name: studentId
@@ -48,10 +67,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/StudentFeeDetails'
 
+  '/student/{studentId}/fee/payment/{paymentReference}:status':
+    get:
+      operationId: getFeePaymentStatus
+      summary: Initiate a payment
+      parameters:
+        - name: studentId
+          in: path
+          description: Unique StudentId i.e Roll-number
+          required: true
+          schema:
+            type: string
+        - name: paymentReference
+          in: path
+          description: Unique paymentReference
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "Student Fee Payment Status"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentFeeDetails'
+
   '/student/{studentId}/fee:payment-status':
     post:
       operationId: feePaymentStatus
-      summary: Record payment-status
+      summary: Record payment-status sent by payment-service
       parameters:
         - name: studentId
           in: path
@@ -68,12 +112,71 @@ paths:
         '201':
           description: Created
 
+  '/student/{studentId}/fee:receipt':
+    get:
+      operationId: getFeeReceiptByStudentId
+      summary: Return fee receipt for student
+      parameters:
+        - name: studentId
+          in: path
+          description: Unique StudentId i.e Roll-number
+          required: true
+          schema:
+            type: string
+        - name: paymentReference
+          in: path
+          description: Unique paymentReference
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentFeeReceipt'
+
 components:
   schemas:
+    StudentFeeReceipt:
+      type: object
+      properties:
+        dateTime:
+          type: string
+          format: date-time
+        studentName:
+          type: string
+        studentId:
+          type: string
+        referenceNumber:
+          type: string
+        cardNumber:
+          type: string
+        cardType:
+          type: string
+        totalAmount:
+          type: number
+        paymentDetails:
+          type: 'array'
+          items:
+            $ref: "#/components/schemas/FeePaymentDetails"
+
+    FeePaymentDetails:
+      type: object
+      properties:
+        feeType:
+          type: string
+        feeAmount:
+          type: number
+
+
     StudentFeePaymentStatusRequest:
       type: object
       properties:
         status:
+          type: string
+        paymentReference:
           type: string
 
     StudentFeePaymentRequest:

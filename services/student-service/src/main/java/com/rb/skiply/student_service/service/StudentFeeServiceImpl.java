@@ -69,7 +69,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
         }
 
         if(feeHistory != null) {
-            prepareStudentFeeDetails(studentFeeDetails, student, feeHistory);
+            pendingStudentFeeDetails(studentFeeDetails, student, feeHistory);
             return studentFeeDetails;
         }
 
@@ -79,7 +79,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
         studentFeeHistory.setStudentId(studentId);
         studentFeeHistory.setAcademicYear(LocalDate.now());
         final StudentFeeHistory studentFeeHistorySaved = studentFeeHistoryRepository.save(studentFeeHistory);
-        prepareStudentFeeDetails(studentFeeDetails, student, studentFeeHistorySaved);
+        pendingStudentFeeDetails(studentFeeDetails, student, studentFeeHistorySaved);
         return studentFeeDetails;
     }
 
@@ -113,18 +113,18 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
                     .filter(
                             feePayment -> (savedStudentFee.getFeeType().equals(feePayment.getFeeType())))
                     .findFirst().get().getFeeAmount());
-            prepareStudentFeeDetails(studentFeeDetails, student, studentFeeHistoryPaymentInitiated);
+            pendingStudentFeeDetails(studentFeeDetails, student, studentFeeHistoryPaymentInitiated);
 
             paymentClientAdapter.registerPayment(studentFeePaymentRequest);
             final StudentFeeHistory studentFeeHistoryPaymentSubmitted = updateStudentFeeHistory(studentFeeHistory, FeePaymentStatus.SUBMITTED_TO_HOST, applicableStudentFees, savedStudentFee -> () -> studentFeePaymentRequest.getFeeDetails().stream()
                     .filter(
                             feePayment -> (savedStudentFee.getFeeType().equals(feePayment.getFeeType())))
                     .findFirst().get().getFeeAmount());
-            prepareStudentFeeDetails(studentFeeDetails, student, studentFeeHistoryPaymentSubmitted);
+            pendingStudentFeeDetails(studentFeeDetails, student, studentFeeHistoryPaymentSubmitted);
         }
         catch(Exception e) {
             final StudentFeeHistory studentFeeHistoryPaymentPending = updateStudentFeeHistory(studentFeeHistory, FeePaymentStatus.PENDING, applicableStudentFees, savedStudentFee -> () -> BigDecimal.ZERO);
-            prepareStudentFeeDetails(studentFeeDetails, student, studentFeeHistoryPaymentPending);
+            pendingStudentFeeDetails(studentFeeDetails, student, studentFeeHistoryPaymentPending);
         }
 
         return studentFeeDetails;
@@ -149,7 +149,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
     }
 
 
-    private void prepareStudentFeeDetails(final StudentFeeDetails studentFeeDetails, final Student student, final StudentFeeHistory studentFeeHistorySaved) {
+    private void pendingStudentFeeDetails(final StudentFeeDetails studentFeeDetails, final Student student, final StudentFeeHistory studentFeeHistorySaved) {
         List<StudentFee> studentFees = studentFeeHistorySaved.getFees();
         studentFees = studentFees.stream().filter(
                 studentFee -> studentFee.getAmountPaid() == null || studentFee.getFeeAmount().compareTo(studentFee.getAmountPaid()) != 0 )

@@ -27,5 +27,7 @@ public class StudentFee {
     private BigDecimal amountPaid;
 
     private FeePaymentStatus feePaymentStatus;
-    
+
+    private String paymentReference;
+
 }

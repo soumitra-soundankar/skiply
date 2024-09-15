@@ -4,6 +4,7 @@ import com.rb.skiply.student_fee.openapi.api.StudentApi;
 import com.rb.skiply.student_fee.openapi.model.StudentFeeDetails;
 import com.rb.skiply.student_fee.openapi.model.StudentFeePaymentRequest;
 import com.rb.skiply.student_fee.openapi.model.StudentFeePaymentStatusRequest;
+import com.rb.skiply.student_fee.openapi.model.StudentFeeReceipt;
 import com.rb.skiply.student_service.exception.FeeTypesNotFound;
 import com.rb.skiply.student_service.exception.StudentNotFound;
 import com.rb.skiply.student_service.service.StudentFeeService;
@@ -22,11 +23,30 @@ public class StudentFeeController implements StudentApi {
 
     @Override
     public ResponseEntity<Void> feePaymentStatus(String studentId, StudentFeePaymentStatusRequest studentFeePaymentStatusRequest) {
+        //update paymentReference
         return null;
     }
 
     @Override
-    public ResponseEntity<StudentFeeDetails> getFeesByStudentId(final String studentId) {
+    public ResponseEntity<StudentFeeDetails> getAllFeesByStudentIdForTheYear(String studentId) {
+        //TODO: return fees with paymentReference
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<StudentFeeDetails> getFeePaymentStatus(String studentId, String paymentReference) {
+        //TODO: return fees payment by paymentReference
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<StudentFeeReceipt> getFeeReceiptByStudentId(String studentId, String paymentReference) {
+        return null;
+    }
+
+
+    @Override
+    public ResponseEntity<StudentFeeDetails> getPendingFeesByStudentId(String studentId) {
         try {
             return ResponseEntity.ok(studentFeeService.getStudentFees(studentId));
         } catch (StudentNotFound e) {
