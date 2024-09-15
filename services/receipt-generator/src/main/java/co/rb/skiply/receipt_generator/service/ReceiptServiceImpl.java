@@ -12,6 +12,7 @@ import com.rb.skiply.receipt_generator.openapi.model.FeePaymentResponse;
 import com.rb.skiply.receipt_generator.openapi.model.PaymentReceiptRequest;
 import com.rb.skiply.receipt_generator.openapi.model.PaymentReceiptResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ReceiptServiceImpl implements ReceiptService {
 
     private final ReceiptRepository receiptRepository;
