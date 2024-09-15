@@ -7,6 +7,7 @@
 
     <groupId>com.rb.skiply</groupId>
     <artifactId>api-code</artifactId>
+    <version>0.0.0</version>
     <packaging>pom</packaging>
 
     <modules>
