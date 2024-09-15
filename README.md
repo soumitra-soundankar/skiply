@@ -1,12 +1,13 @@
 # Skiply : A student management and fees collection platform
 
 ### Architecture
+![img.png](img.png)
 
-There are two parts of this repo <br /> 
- 1. api-code : which contains APIs nad models that can be used by other dependent service instead of recreating those again <br />
- 2. services: which contains microservices <br />
+### Repo Details
+There are two parts of this repo <br />
+1. api-code : which contains APIs nad models that can be used by other dependent service instead of recreating those again <br />
+2. services: which contains microservices <br />
 
-### 
 
 ### Services
 Application has been split into 4 services that manages separate functionalities <br />
@@ -28,3 +29,7 @@ Application has been split into 4 services that manages separate functionalities
 
 ### Postman Collection
 Go to docs folder for postman collection
+
+### Future scope
+1. Instead of adding values in postman collection we can use postman env variable to set values at the runtime
+2. In payment-service we can use State Design pattern to maintain state for the payment
