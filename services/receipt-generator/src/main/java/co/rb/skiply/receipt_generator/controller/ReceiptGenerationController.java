@@ -1,5 +1,6 @@
 package co.rb.skiply.receipt_generator.controller;
 
+import co.rb.skiply.receipt_generator.exception.ReceiptNotFoundException;
 import co.rb.skiply.receipt_generator.service.ReceiptService;
 import com.rb.skiply.receipt_generator.openapi.api.ReceiptApi;
 import com.rb.skiply.receipt_generator.openapi.model.PaymentReceiptResponse;
@@ -16,6 +17,10 @@ public class ReceiptGenerationController implements ReceiptApi {
 
     @Override
     public ResponseEntity<PaymentReceiptResponse> getReceipt(final String paymentReference) {
-        return new ResponseEntity<>(receiptService.getReceiptByPaymentReference(paymentReference), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(receiptService.getReceiptByPaymentReference(paymentReference), HttpStatus.OK);
+        } catch (ReceiptNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 }

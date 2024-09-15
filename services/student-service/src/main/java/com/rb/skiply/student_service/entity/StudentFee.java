@@ -26,6 +26,7 @@ public class StudentFee {
 
     private BigDecimal amountPaid;
 
+    @Enumerated(EnumType.STRING)
     private FeePaymentStatus feePaymentStatus;
 
     private String paymentReference;

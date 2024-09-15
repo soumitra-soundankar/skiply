@@ -65,7 +65,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StudentFeeDetails'
+                $ref: '#/components/schemas/StudentFeePaymentResponse'
 
   '/student/{studentId}/fee/payment/{paymentReference}:status':
     get:
@@ -93,7 +93,7 @@ paths:
                 $ref: '#/components/schemas/StudentFeeDetails'
 
   '/student/{studentId}/fee:payment-status':
-    post:
+    put:
       operationId: feePaymentStatus
       summary: Record payment-status sent by payment-service
       parameters:
@@ -225,4 +225,14 @@ components:
           type: string
         feeAmount:
           type: number
+
+    StudentFeePaymentResponse:
+      type: object
+      properties:
+        studentId:
+          type: string
+        paymentReference:
+          type: string
+        paymentStatus:
+          type: string
 

@@ -1,9 +1,7 @@
 package com.rb.skiply.student_service.service;
 
 import com.rb.skiply.fee_service.openapi.model.FeeDetails;
-import com.rb.skiply.student_fee.openapi.model.FeePayment;
-import com.rb.skiply.student_fee.openapi.model.StudentFeeDetails;
-import com.rb.skiply.student_fee.openapi.model.StudentFeePaymentRequest;
+import com.rb.skiply.student_fee.openapi.model.*;
 import com.rb.skiply.student_service.entity.FeePaymentStatus;
 import com.rb.skiply.student_service.entity.Student;
 import com.rb.skiply.student_service.entity.StudentFee;
@@ -11,13 +9,13 @@ import com.rb.skiply.student_service.entity.StudentFeeHistory;
 import com.rb.skiply.student_service.exception.FeeTypesNotFound;
 import com.rb.skiply.student_service.exception.StudentNotFound;
 import com.rb.skiply.student_service.mapper.FeeMapper;
+import com.rb.skiply.student_service.mapper.StudentFeeDetailsMapper;
 import com.rb.skiply.student_service.mapper.StudentFeeHistoryMapper;
 import com.rb.skiply.student_service.port.FeeClientAdapter;
 import com.rb.skiply.student_service.port.PaymentClientAdapter;
 import com.rb.skiply.student_service.repository.StudentFeeHistoryRepository;
 import com.rb.skiply.student_service.repository.StudentFeeRepository;
 import com.rb.skiply.student_service.repository.StudentRepository;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,6 +48,8 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
     private final StudentFeeHistoryMapper mapper;
 
     private final FeeMapper feeMapper;
+
+    private final StudentFeeDetailsMapper studentFeeDetailsMapper;
 
 
     @Override
@@ -85,7 +85,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public StudentFeeDetails initiatePayment(@NotNull  String studentId, @NotNull StudentFeePaymentRequest studentFeePaymentRequest) throws StudentNotFound, FeeTypesNotFound {
+    public StudentFeePaymentResponse initiatePayment(String studentId, StudentFeePaymentRequest studentFeePaymentRequest) throws StudentNotFound, FeeTypesNotFound {
         final Student student = studentRepository.findByStudentId(studentId);
         final StudentFeeDetails studentFeeDetails = new StudentFeeDetails();
 
@@ -115,19 +115,64 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
                     .findFirst().get().getFeeAmount());
             pendingStudentFeeDetails(studentFeeDetails, student, studentFeeHistoryPaymentInitiated);
 
-            paymentClientAdapter.registerPayment(studentFeePaymentRequest);
-            final StudentFeeHistory studentFeeHistoryPaymentSubmitted = updateStudentFeeHistory(studentFeeHistory, FeePaymentStatus.SUBMITTED_TO_HOST, applicableStudentFees, savedStudentFee -> () -> studentFeePaymentRequest.getFeeDetails().stream()
+            final StudentFeePaymentResponse studentFeePaymentResponse = convertPaymentServicePaymentResponse(paymentClientAdapter.registerPayment(createRegisterPaymentRequest(student, studentFeePaymentRequest)));
+            final StudentFeeHistory studentFeeHistoryPaymentSubmitted = updateStudentFeeHistory(studentFeeHistory, FeePaymentStatus.fromText(studentFeePaymentResponse.getPaymentStatus()).get(), applicableStudentFees, savedStudentFee -> () -> studentFeePaymentRequest.getFeeDetails().stream()
                     .filter(
                             feePayment -> (savedStudentFee.getFeeType().equals(feePayment.getFeeType())))
                     .findFirst().get().getFeeAmount());
             pendingStudentFeeDetails(studentFeeDetails, student, studentFeeHistoryPaymentSubmitted);
+
+            return studentFeePaymentResponse;
         }
         catch(Exception e) {
             final StudentFeeHistory studentFeeHistoryPaymentPending = updateStudentFeeHistory(studentFeeHistory, FeePaymentStatus.PENDING, applicableStudentFees, savedStudentFee -> () -> BigDecimal.ZERO);
             pendingStudentFeeDetails(studentFeeDetails, student, studentFeeHistoryPaymentPending);
         }
 
-        return studentFeeDetails;
+        return new StudentFeePaymentResponse();
+    }
+
+    private StudentFeePaymentResponse convertPaymentServicePaymentResponse(com.rb.skiply.payment_service.openapi.model.StudentFeePaymentResponse studentFeePaymentResponse) {
+        return new StudentFeePaymentResponse()
+                .paymentReference(studentFeePaymentResponse.getPaymentReference())
+                .studentId(studentFeePaymentResponse.getStudentId())
+                .paymentStatus(studentFeePaymentResponse.getPaymentStatus());
+    }
+
+    private com.rb.skiply.payment_service.openapi.model.StudentFeePaymentRequest createRegisterPaymentRequest(final Student student, final StudentFeePaymentRequest studentFeePaymentRequest) {
+        return new com.rb.skiply.payment_service.openapi.model.StudentFeePaymentRequest()
+                .studentId(student.getStudentId())
+                .cardNumber(studentFeePaymentRequest.getCardNumber())
+                .cardType(studentFeePaymentRequest.getCardType())
+                .totalAmount(studentFeePaymentRequest.getTotalAmount())
+                .feeDetails(createFeePayment(studentFeePaymentRequest.getFeeDetails()));
+    }
+
+    private List<com.rb.skiply.payment_service.openapi.model.FeePayment> createFeePayment(List<FeePayment> feeDetails) {
+        return feeDetails.stream()
+                .map(feePayment -> new com.rb.skiply.payment_service.openapi.model.FeePayment()
+                        .feeAmount(feePayment.getFeeAmount())
+                        .feeType(feePayment.getFeeType()))
+                .toList();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public StudentFeeDetails updateFeePaymentStatus(String studentId, StudentFeePaymentStatusRequest studentFeePaymentStatusRequest) {
+
+        final StudentFeeHistory feeHistory = studentFeeHistoryRepository.findByStudentId(studentId, LocalDate.now().getYear());
+
+        feeHistory.getFees().forEach(
+                studentFee -> {
+                    if(FeePaymentStatus.SUBMITTED_TO_HOST.compareTo(studentFee.getFeePaymentStatus()) == 0) {
+                        studentFee.setFeePaymentStatus( FeePaymentStatus.fromText(studentFeePaymentStatusRequest.getStatus()).get());
+                        studentFee.setPaymentReference(studentFeePaymentStatusRequest.getPaymentReference());
+                    }
+                }
+        );
+        final StudentFeeHistory feeHistoryUpdated = studentFeeHistoryRepository.save(feeHistory);
+
+        return studentFeeDetailsMapper.toStudentFeeDetails(feeHistoryUpdated);
     }
 
     private StudentFeeHistory updateStudentFeeHistory(StudentFeeHistory studentFeeHistory, FeePaymentStatus status, List<StudentFee> applicableStudentFees, Function<StudentFee, Supplier<BigDecimal>> AmountFunction) {

@@ -27,7 +27,7 @@ public class PaymentController implements PaymentApi {
     }
 
     @Override
-    public ResponseEntity<StudentFeePaymentResponse> registerPayment(StudentFeePaymentRequest studentFeePaymentRequest) {
+    public ResponseEntity<StudentFeePaymentResponse> registerPayment(final StudentFeePaymentRequest studentFeePaymentRequest) {
         try {
             return new ResponseEntity<>(paymentService.registerPayment(studentFeePaymentRequest), HttpStatus.OK);
         }

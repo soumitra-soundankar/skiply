@@ -2,6 +2,9 @@ package com.rb.skiply.student_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum FeePaymentStatus {
 
     PENDING("Pending"),
@@ -22,8 +25,18 @@ public enum FeePaymentStatus {
         return status;
     }
 
+    public FeePaymentStatus getStatus(String value) {
+        return FeePaymentStatus.valueOf(value);
+    }
+
     @Override
     public String toString() {
         return String.valueOf(status);
+    }
+
+    public static Optional<FeePaymentStatus> fromText(String text) {
+        return Arrays.stream(values())
+                .filter(status -> status.status.equalsIgnoreCase(text))
+                .findFirst();
     }
 }

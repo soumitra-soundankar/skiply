@@ -11,7 +11,7 @@ public class StudentFeePaymentResponseMapper {
         return new StudentFeePaymentResponse()
                 .paymentReference(payment.getPaymentReference())
                 .studentId(payment.getStudentId())
-                .paymentStatus(payment.getPaymentStatus().getValue());
+                .paymentStatus(payment.getFeePaymentStatus().getValue());
     }
 
 }

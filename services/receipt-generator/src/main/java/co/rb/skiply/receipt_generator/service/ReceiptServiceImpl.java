@@ -2,6 +2,7 @@ package co.rb.skiply.receipt_generator.service;
 
 import co.rb.skiply.receipt_generator.entity.Receipt;
 import co.rb.skiply.receipt_generator.entity.ReceiptFee;
+import co.rb.skiply.receipt_generator.exception.ReceiptNotFoundException;
 import co.rb.skiply.receipt_generator.mapper.FeePaymentResponseMapper;
 import co.rb.skiply.receipt_generator.mapper.PaymentReceiptResponseMapper;
 import co.rb.skiply.receipt_generator.mapper.ReceiptMapper;
@@ -30,7 +31,7 @@ public class ReceiptServiceImpl implements ReceiptService {
     private PaymentReceiptResponseMapper paymentReceiptResponseMapper;
 
     @Override
-    public PaymentReceiptResponse getReceiptByPaymentReference(final String paymentReference) {
+    public PaymentReceiptResponse getReceiptByPaymentReference(final String paymentReference) throws ReceiptNotFoundException {
         Receipt receipt = receiptRepository.findByPaymentReference(paymentReference);
         return paymentReceiptResponseMapper.toPaymentReceiptResponse(receipt);
     }

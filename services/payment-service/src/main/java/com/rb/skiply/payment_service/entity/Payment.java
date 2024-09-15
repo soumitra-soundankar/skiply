@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Entity
@@ -30,7 +31,10 @@ public class Payment {
 
     private String cardType;
 
-    private PaymentStatus paymentStatus;
+    @Enumerated(EnumType.STRING)
+    private FeePaymentStatus feePaymentStatus;
+
+    private OffsetDateTime paymentDateTime;
 
     @OneToMany(mappedBy = "payment", fetch = FetchType.LAZY)
     @ToString.Exclude

@@ -2,16 +2,18 @@ package com.rb.skiply.payment_service.entity;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum PaymentStatus {
+public enum FeePaymentStatus {
 
-    SUBMITTED_TO_HOST("SendToHost"),
-    WAITING_FOR_HOST("WithHost"),
+    PENDING("Pending"),
+    INITIATED("Initiated"),
+    SUBMITTED_TO_HOST("SubmittedToHost"),
+    WAITING_FROM_HOST("WaitingFromHost"),
     SUCCESS("Success"),
-    Failed("Failed");
+    FAILED("Failed");
 
     private final String status;
 
-    PaymentStatus(String status) {
+    FeePaymentStatus(String status) {
         this.status = status;
     }
 

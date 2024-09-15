@@ -1,10 +1,7 @@
 package com.rb.skiply.student_service.controller;
 
 import com.rb.skiply.student_fee.openapi.api.StudentApi;
-import com.rb.skiply.student_fee.openapi.model.StudentFeeDetails;
-import com.rb.skiply.student_fee.openapi.model.StudentFeePaymentRequest;
-import com.rb.skiply.student_fee.openapi.model.StudentFeePaymentStatusRequest;
-import com.rb.skiply.student_fee.openapi.model.StudentFeeReceipt;
+import com.rb.skiply.student_fee.openapi.model.*;
 import com.rb.skiply.student_service.exception.FeeTypesNotFound;
 import com.rb.skiply.student_service.exception.StudentNotFound;
 import com.rb.skiply.student_service.service.StudentFeeService;
@@ -24,7 +21,11 @@ public class StudentFeeController implements StudentApi {
     @Override
     public ResponseEntity<Void> feePaymentStatus(String studentId, StudentFeePaymentStatusRequest studentFeePaymentStatusRequest) {
         //update paymentReference
-        return null;
+        StudentFeeDetails studentFeeDetails = studentFeeService.updateFeePaymentStatus(studentId, studentFeePaymentStatusRequest);
+        if(studentFeeDetails != null)
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class StudentFeeController implements StudentApi {
     }
 
     @Override
-    public ResponseEntity<StudentFeeDetails> initiateFeePayment(String studentId, StudentFeePaymentRequest studentFeePaymentRequest) {
+    public ResponseEntity<StudentFeePaymentResponse> initiateFeePayment(String studentId, StudentFeePaymentRequest studentFeePaymentRequest) {
         try {
             return ResponseEntity.ok(studentFeeService.initiatePayment(studentId, studentFeePaymentRequest));
         } catch (StudentNotFound | FeeTypesNotFound e) {
