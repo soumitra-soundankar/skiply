@@ -3,6 +3,9 @@
 ### Architecture
 ![img.png](img.png)
 
+### Database schema
+Work in progress
+
 ### Repo Details
 There are two parts of this repo <br />
 1. api-code : which contains APIs nad models that can be used by other dependent service instead of recreating those again <br />
