@@ -64,8 +64,10 @@ public class StudentFeeController implements StudentApi {
         try {
             return ResponseEntity.ok(studentFeeService.initiatePayment(studentId, studentFeePaymentRequest));
         } catch (StudentNotFound | FeeTypesNotFound e) {
+            e.printStackTrace();
            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

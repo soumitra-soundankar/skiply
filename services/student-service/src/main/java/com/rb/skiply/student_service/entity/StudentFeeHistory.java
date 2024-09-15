@@ -1,10 +1,7 @@
 package com.rb.skiply.student_service.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class StudentFeeHistory {
 
     @Id

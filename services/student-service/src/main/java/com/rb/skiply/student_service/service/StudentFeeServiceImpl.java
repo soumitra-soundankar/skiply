@@ -53,7 +53,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
 
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public StudentFeeDetails getStudentFees(final String studentId) throws StudentNotFound {
         final StudentFeeDetails studentFeeDetails = new StudentFeeDetails();
         final StudentFeeHistory studentFeeHistory = new StudentFeeHistory();
@@ -85,7 +85,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public StudentFeePaymentResponse initiatePayment(String studentId, StudentFeePaymentRequest studentFeePaymentRequest) throws StudentNotFound, FeeTypesNotFound {
         final Student student = studentRepository.findByStudentId(studentId);
         final StudentFeeDetails studentFeeDetails = new StudentFeeDetails();
