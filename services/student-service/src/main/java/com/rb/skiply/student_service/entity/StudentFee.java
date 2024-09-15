@@ -24,5 +24,8 @@ public class StudentFee {
 
     private BigDecimal feeAmount;
 
+    private BigDecimal amountPaid;
 
+    private FeePaymentStatus feePaymentStatus;
+    
 }

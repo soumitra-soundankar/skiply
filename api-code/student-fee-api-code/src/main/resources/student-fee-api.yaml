@@ -43,11 +43,15 @@ paths:
       responses:
         '201':
           description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentFeeDetails'
 
   '/student/{studentId}/fee:payment-status':
     post:
-      operationId: initiateFeePayment
-      summary: Initiate a payment
+      operationId: feePaymentStatus
+      summary: Record payment-status
       parameters:
         - name: studentId
           in: path
@@ -75,12 +79,16 @@ components:
     StudentFeePaymentRequest:
       type: object
       properties:
-        amount:
+        totalAmount:
           type: number
         cardNumber:
           type: string
         cardType:
           type: string
+        feeDetails:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/FeePayment"
 
 
     StudentFeeDetails:
@@ -96,6 +104,16 @@ components:
           type: "array"
           items:
             $ref: '#/components/schemas/Fee'
+
+    FeePayment:
+      type: object
+      properties:
+        feeType:
+          type: string
+        feeAmount:
+          type: number
+        customAmount:
+          type: number
 
     Fee:
       type: object
