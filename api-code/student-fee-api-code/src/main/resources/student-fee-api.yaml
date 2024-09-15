@@ -112,7 +112,7 @@ paths:
         '201':
           description: Created
 
-  '/student/{studentId}/fee:receipt':
+  '/student/{studentId}/payment/{paymentReference}/fee:receipt':
     get:
       operationId: getFeeReceiptByStudentId
       summary: Return fee receipt for student

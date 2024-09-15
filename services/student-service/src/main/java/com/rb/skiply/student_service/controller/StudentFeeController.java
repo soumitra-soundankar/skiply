@@ -4,6 +4,7 @@ import com.rb.skiply.student_fee.openapi.api.StudentApi;
 import com.rb.skiply.student_fee.openapi.model.*;
 import com.rb.skiply.student_service.exception.FeeTypesNotFound;
 import com.rb.skiply.student_service.exception.StudentNotFound;
+import com.rb.skiply.student_service.service.StudentFeeReceiptService;
 import com.rb.skiply.student_service.service.StudentFeeService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +19,10 @@ public class StudentFeeController implements StudentApi {
 
     private final StudentFeeService studentFeeService;
 
+    private final StudentFeeReceiptService studentFeeReceiptService;
     @Override
     public ResponseEntity<Void> feePaymentStatus(String studentId, StudentFeePaymentStatusRequest studentFeePaymentStatusRequest) {
-        //update paymentReference
+
         StudentFeeDetails studentFeeDetails = studentFeeService.updateFeePaymentStatus(studentId, studentFeePaymentStatusRequest);
         if(studentFeeDetails != null)
             return new ResponseEntity<>(HttpStatus.OK);
@@ -42,7 +44,15 @@ public class StudentFeeController implements StudentApi {
 
     @Override
     public ResponseEntity<StudentFeeReceipt> getFeeReceiptByStudentId(String studentId, String paymentReference) {
-        return null;
+        try {
+            return new ResponseEntity<>(studentFeeReceiptService.getStudentReceiptByStudentIdAndPaymentRef(
+                    studentId,
+                    paymentReference),
+                    HttpStatus.OK);
+        }
+        catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 
