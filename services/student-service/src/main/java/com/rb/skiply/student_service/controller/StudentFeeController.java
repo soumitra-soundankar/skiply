@@ -2,9 +2,9 @@ package com.rb.skiply.student_service.controller;
 
 import com.rb.skiply.student_fee.openapi.api.StudentApi;
 import com.rb.skiply.student_fee.openapi.model.*;
-import com.rb.skiply.student_service.exception.FeeTypesNotFound;
-import com.rb.skiply.student_service.exception.StudentFeeHistoryNotFound;
-import com.rb.skiply.student_service.exception.StudentNotFound;
+import com.rb.skiply.student_service.exception.FeeTypesNotFoundException;
+import com.rb.skiply.student_service.exception.StudentFeeHistoryNotFoundException;
+import com.rb.skiply.student_service.exception.StudentNotFoundException;
 import com.rb.skiply.student_service.service.StudentFeeReceiptService;
 import com.rb.skiply.student_service.service.StudentFeeService;
 import lombok.AllArgsConstructor;
@@ -27,7 +27,7 @@ public class StudentFeeController implements StudentApi {
         try {
             studentFeeService.updateFeePaymentStatus(studentId, studentFeePaymentStatusRequest);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (StudentFeeHistoryNotFound e) {
+        } catch (StudentFeeHistoryNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -64,7 +64,7 @@ public class StudentFeeController implements StudentApi {
     public ResponseEntity<StudentFeeDetails> getPendingFeesByStudentId(String studentId) {
         try {
             return ResponseEntity.ok(studentFeeService.getStudentFees(studentId));
-        } catch (StudentNotFound e) {
+        } catch (StudentNotFoundException e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -77,7 +77,7 @@ public class StudentFeeController implements StudentApi {
     public ResponseEntity<StudentFeePaymentResponse> initiateFeePayment(String studentId, StudentFeePaymentRequest studentFeePaymentRequest) {
         try {
             return ResponseEntity.ok(studentFeeService.initiatePayment(studentId, studentFeePaymentRequest));
-        } catch (StudentNotFound | FeeTypesNotFound e) {
+        } catch (StudentNotFoundException | FeeTypesNotFoundException e) {
             log.error(e.getMessage());
            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {

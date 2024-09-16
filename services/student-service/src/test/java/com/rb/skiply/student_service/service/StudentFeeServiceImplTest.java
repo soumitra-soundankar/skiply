@@ -2,9 +2,9 @@ package com.rb.skiply.student_service.service;
 
 import com.rb.skiply.student_fee.openapi.model.StudentFeeDetails;
 import com.rb.skiply.student_fee.openapi.model.StudentFeePaymentResponse;
-import com.rb.skiply.student_service.exception.FeeTypesNotFound;
-import com.rb.skiply.student_service.exception.StudentFeeHistoryNotFound;
-import com.rb.skiply.student_service.exception.StudentNotFound;
+import com.rb.skiply.student_service.exception.FeeTypesNotFoundException;
+import com.rb.skiply.student_service.exception.StudentFeeHistoryNotFoundException;
+import com.rb.skiply.student_service.exception.StudentNotFoundException;
 import com.rb.skiply.student_service.mapper.FeeMapper;
 import com.rb.skiply.student_service.mapper.StudentFeeDetailsMapper;
 import com.rb.skiply.student_service.mapper.StudentFeeHistoryMapper;
@@ -62,7 +62,7 @@ class StudentFeeServiceImplTest extends StudentServiceTest {
     }
 
     @Test
-    void getStudentFees_Happy_Path() throws StudentNotFound {
+    void getStudentFees_Happy_Path() throws StudentNotFoundException {
 
         when(studentRepository.findByStudentId(anyString())).thenReturn(createStudent());
         when(studentFeeHistoryRepository.findByStudentId(anyString(), any())).thenReturn(null);
@@ -78,7 +78,7 @@ class StudentFeeServiceImplTest extends StudentServiceTest {
     }
 
     @Test
-    void getStudentFees_Happy_Path_Existing_Pending_Fees() throws StudentNotFound {
+    void getStudentFees_Happy_Path_Existing_Pending_Fees() throws StudentNotFoundException {
 
         when(studentRepository.findByStudentId(anyString())).thenReturn(createStudent());
         when(studentFeeHistoryRepository.findByStudentId(anyString(), any())).thenReturn(createStudentFeeHistory());
@@ -94,14 +94,14 @@ class StudentFeeServiceImplTest extends StudentServiceTest {
     void getStudentFees_student_not_found() {
 
         when(studentRepository.findByStudentId(anyString())).thenReturn(null);
-        var exception = assertThrows(StudentNotFound.class, () -> service.getStudentFees("PLN1248"));
+        var exception = assertThrows(StudentNotFoundException.class, () -> service.getStudentFees("PLN1248"));
         Assertions.assertEquals(exception.getMessage(), "Student with id PLN1248 not found.");
 
     }
 
 
     @Test
-    void initiatePayment_Happy_Path() throws FeeTypesNotFound, StudentNotFound {
+    void initiatePayment_Happy_Path() throws FeeTypesNotFoundException, StudentNotFoundException {
         when(studentRepository.findByStudentId(anyString())).thenReturn(createStudent());
         when(studentFeeHistoryRepository.findByStudentId(anyString(), any())).thenReturn(createStudentFeeHistory());
         when(studentFeeHistoryRepository.save(any())).thenReturn(createStudentFeeHistory());
@@ -110,22 +110,22 @@ class StudentFeeServiceImplTest extends StudentServiceTest {
     }
 
     @Test
-    void initiatePayment_No_matching_Fees() throws FeeTypesNotFound, StudentNotFound {
+    void initiatePayment_No_matching_Fees() throws FeeTypesNotFoundException, StudentNotFoundException {
         when(studentRepository.findByStudentId(anyString())).thenReturn(createStudent());
         when(studentFeeHistoryRepository.findByStudentId(anyString(), any())).thenReturn(createStudentFeeHistory());
-        var exception = assertThrows(FeeTypesNotFound.class, () -> service.initiatePayment(STUDENT_ID, createStudentFeePaymentRequestNoMatchingFees()));
+        var exception = assertThrows(FeeTypesNotFoundException.class, () -> service.initiatePayment(STUDENT_ID, createStudentFeePaymentRequestNoMatchingFees()));
         Assertions.assertEquals("No matching feeTypes found from request", exception.getMessage());
     }
 
     @Test
     void initiatePayment_student_not_found() {
         when(studentRepository.findByStudentId(anyString())).thenReturn(null);
-        var exception = assertThrows(StudentNotFound.class, () -> service.initiatePayment("PLN1248", createStudentFeePaymentRequest()));
+        var exception = assertThrows(StudentNotFoundException.class, () -> service.initiatePayment("PLN1248", createStudentFeePaymentRequest()));
         Assertions.assertEquals(exception.getMessage(), "Student with id PLN1248 not found.");
     }
 
     @Test
-    void updateFeePaymentStatus_Happy_Path() throws StudentFeeHistoryNotFound {
+    void updateFeePaymentStatus_Happy_Path() throws StudentFeeHistoryNotFoundException {
         when(studentFeeHistoryRepository.findByStudentId(anyString(), any())).thenReturn(createStudentFeeHistoryWithSubmitToHostStatus());
         when(studentFeeHistoryRepository.save(any())).thenReturn(createStudentFeeHistory());
         StudentFeeDetails studentFeeDetails = service.updateFeePaymentStatus(STUDENT_ID, createStudentFeePaymentStatusRequest());
@@ -135,7 +135,7 @@ class StudentFeeServiceImplTest extends StudentServiceTest {
     @Test
     void updateFeePaymentStatus_Student_History_Not_Found() {
         when(studentFeeHistoryRepository.findByStudentId(anyString(), any())).thenReturn(null);
-        var exception = assertThrows(StudentFeeHistoryNotFound.class, () -> service.updateFeePaymentStatus(STUDENT_ID, createStudentFeePaymentStatusRequest()));
+        var exception = assertThrows(StudentFeeHistoryNotFoundException.class, () -> service.updateFeePaymentStatus(STUDENT_ID, createStudentFeePaymentStatusRequest()));
         Assertions.assertEquals("Student History not found for "+ STUDENT_ID, exception.getMessage());
     }
 }

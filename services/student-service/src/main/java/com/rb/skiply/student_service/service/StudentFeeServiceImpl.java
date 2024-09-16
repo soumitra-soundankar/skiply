@@ -6,9 +6,9 @@ import com.rb.skiply.student_service.entity.FeePaymentStatus;
 import com.rb.skiply.student_service.entity.Student;
 import com.rb.skiply.student_service.entity.StudentFee;
 import com.rb.skiply.student_service.entity.StudentFeeHistory;
-import com.rb.skiply.student_service.exception.FeeTypesNotFound;
-import com.rb.skiply.student_service.exception.StudentFeeHistoryNotFound;
-import com.rb.skiply.student_service.exception.StudentNotFound;
+import com.rb.skiply.student_service.exception.FeeTypesNotFoundException;
+import com.rb.skiply.student_service.exception.StudentFeeHistoryNotFoundException;
+import com.rb.skiply.student_service.exception.StudentNotFoundException;
 import com.rb.skiply.student_service.mapper.FeeMapper;
 import com.rb.skiply.student_service.mapper.StudentFeeDetailsMapper;
 import com.rb.skiply.student_service.mapper.StudentFeeHistoryMapper;
@@ -55,13 +55,13 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public StudentFeeDetails getStudentFees(final String studentId) throws StudentNotFound {
+    public StudentFeeDetails getStudentFees(final String studentId) throws StudentNotFoundException {
         final StudentFeeDetails studentFeeDetails = new StudentFeeDetails();
         final StudentFeeHistory studentFeeHistory = new StudentFeeHistory();
         final Student student = studentRepository.findByStudentId(studentId);
 
         if(student == null) {
-            throw new StudentNotFound(String.format("Student with id %s not found.", studentId));
+            throw new StudentNotFoundException(String.format("Student with id %s not found.", studentId));
         }
 
         final StudentFeeHistory feeHistory = studentFeeHistoryRepository.findByStudentId(studentId, LocalDate.now().getYear());
@@ -87,12 +87,12 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public StudentFeePaymentResponse initiatePayment(final String studentId, final StudentFeePaymentRequest studentFeePaymentRequest) throws StudentNotFound, FeeTypesNotFound {
+    public StudentFeePaymentResponse initiatePayment(final String studentId, final StudentFeePaymentRequest studentFeePaymentRequest) throws StudentNotFoundException, FeeTypesNotFoundException {
         final Student student = studentRepository.findByStudentId(studentId);
         final StudentFeeDetails studentFeeDetails = new StudentFeeDetails();
 
         if(student == null) {
-            throw new StudentNotFound(String.format("Student with id %s not found.", studentId));
+            throw new StudentNotFoundException(String.format("Student with id %s not found.", studentId));
         }
         final StudentFeeHistory studentFeeHistory = studentFeeHistoryRepository.findByStudentId(studentId, LocalDate.now().getYear());
 
@@ -107,7 +107,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
                 .toList();
 
         if(applicableStudentFees.isEmpty()) {
-            throw new FeeTypesNotFound("No matching feeTypes found from request");
+            throw new FeeTypesNotFoundException("No matching feeTypes found from request");
         }
 
         try {
@@ -160,12 +160,12 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public StudentFeeDetails updateFeePaymentStatus(final String studentId, final StudentFeePaymentStatusRequest studentFeePaymentStatusRequest) throws StudentFeeHistoryNotFound {
+    public StudentFeeDetails updateFeePaymentStatus(final String studentId, final StudentFeePaymentStatusRequest studentFeePaymentStatusRequest) throws StudentFeeHistoryNotFoundException {
 
         final StudentFeeHistory feeHistory = studentFeeHistoryRepository.findByStudentId(studentId, LocalDate.now().getYear());
 
         if(feeHistory == null)
-            throw new StudentFeeHistoryNotFound(String.format("Student History not found for %s", studentId));
+            throw new StudentFeeHistoryNotFoundException(String.format("Student History not found for %s", studentId));
 
         feeHistory.getFees().forEach(
                 studentFee -> {
