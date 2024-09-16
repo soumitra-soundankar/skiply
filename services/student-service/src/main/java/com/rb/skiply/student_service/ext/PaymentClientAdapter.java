@@ -1,4 +1,4 @@
-package com.rb.skiply.student_service.port;
+package com.rb.skiply.student_service.ext;
 
 import com.rb.skiply.payment_service.openapi.model.StudentFeePaymentResponse;
 import com.rb.skiply.student_service.exception.PaymentNotRegisteredException;

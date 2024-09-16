@@ -2,7 +2,7 @@ package com.rb.skiply.student_service.service;
 
 import com.rb.skiply.student_fee.openapi.model.StudentFeeReceipt;
 import com.rb.skiply.student_service.entity.Student;
-import com.rb.skiply.student_service.port.ReceiptClientAdapter;
+import com.rb.skiply.student_service.ext.ReceiptClientAdapter;
 import com.rb.skiply.student_service.repository.StudentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

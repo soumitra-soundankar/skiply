@@ -1,4 +1,4 @@
-package com.rb.skiply.payment_service.port;
+package com.rb.skiply.payment_service.ext;
 
 import com.rb.skiply.payment_service.exception.CommunicationException;
 import com.rb.skiply.receipt_generator.openapi.model.FeePaymentResponse;
@@ -15,7 +15,7 @@ public class ReceiptClientAdapter {
 
     private final RestClient restClient;
 
-    private static String RECEIPT_GENERATOR_BASE_URL = "http://localhost:8083/receipt";
+    private static final String RECEIPT_GENERATOR_BASE_URL = "http://localhost:8083/receipt";
     public FeePaymentResponse publishDataToReceiptGenerator(final PaymentReceiptRequest paymentReceiptRequest ) throws CommunicationException {
 
         ResponseEntity<FeePaymentResponse> feePaymentResponseResponseEntity =  restClient.post()

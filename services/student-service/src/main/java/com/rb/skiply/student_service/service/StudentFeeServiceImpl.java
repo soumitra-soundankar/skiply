@@ -7,12 +7,13 @@ import com.rb.skiply.student_service.entity.Student;
 import com.rb.skiply.student_service.entity.StudentFee;
 import com.rb.skiply.student_service.entity.StudentFeeHistory;
 import com.rb.skiply.student_service.exception.FeeTypesNotFound;
+import com.rb.skiply.student_service.exception.StudentFeeHistoryNotFound;
 import com.rb.skiply.student_service.exception.StudentNotFound;
 import com.rb.skiply.student_service.mapper.FeeMapper;
 import com.rb.skiply.student_service.mapper.StudentFeeDetailsMapper;
 import com.rb.skiply.student_service.mapper.StudentFeeHistoryMapper;
-import com.rb.skiply.student_service.port.FeeClientAdapter;
-import com.rb.skiply.student_service.port.PaymentClientAdapter;
+import com.rb.skiply.student_service.ext.FeeClientAdapter;
+import com.rb.skiply.student_service.ext.PaymentClientAdapter;
 import com.rb.skiply.student_service.repository.StudentFeeHistoryRepository;
 import com.rb.skiply.student_service.repository.StudentFeeRepository;
 import com.rb.skiply.student_service.repository.StudentRepository;
@@ -91,7 +92,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
         final StudentFeeDetails studentFeeDetails = new StudentFeeDetails();
 
         if(student == null) {
-            throw new StudentNotFound("Student ID not found");
+            throw new StudentNotFound(String.format("Student with id %s not found.", studentId));
         }
         final StudentFeeHistory studentFeeHistory = studentFeeHistoryRepository.findByStudentId(studentId, LocalDate.now().getYear());
 
@@ -159,9 +160,12 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public StudentFeeDetails updateFeePaymentStatus(final String studentId, final StudentFeePaymentStatusRequest studentFeePaymentStatusRequest) {
+    public StudentFeeDetails updateFeePaymentStatus(final String studentId, final StudentFeePaymentStatusRequest studentFeePaymentStatusRequest) throws StudentFeeHistoryNotFound {
 
         final StudentFeeHistory feeHistory = studentFeeHistoryRepository.findByStudentId(studentId, LocalDate.now().getYear());
+
+        if(feeHistory == null)
+            throw new StudentFeeHistoryNotFound(String.format("Student History not found for %s", studentId));
 
         feeHistory.getFees().forEach(
                 studentFee -> {

@@ -3,6 +3,7 @@ package com.rb.skiply.student_service.controller;
 import com.rb.skiply.student_fee.openapi.api.StudentApi;
 import com.rb.skiply.student_fee.openapi.model.*;
 import com.rb.skiply.student_service.exception.FeeTypesNotFound;
+import com.rb.skiply.student_service.exception.StudentFeeHistoryNotFound;
 import com.rb.skiply.student_service.exception.StudentNotFound;
 import com.rb.skiply.student_service.service.StudentFeeReceiptService;
 import com.rb.skiply.student_service.service.StudentFeeService;
@@ -23,11 +24,13 @@ public class StudentFeeController implements StudentApi {
     @Override
     public ResponseEntity<Void> feePaymentStatus(String studentId, StudentFeePaymentStatusRequest studentFeePaymentStatusRequest) {
 
-        StudentFeeDetails studentFeeDetails = studentFeeService.updateFeePaymentStatus(studentId, studentFeePaymentStatusRequest);
-        if(studentFeeDetails != null)
+        try {
+            studentFeeService.updateFeePaymentStatus(studentId, studentFeePaymentStatusRequest);
             return new ResponseEntity<>(HttpStatus.OK);
+        } catch (StudentFeeHistoryNotFound e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @Override

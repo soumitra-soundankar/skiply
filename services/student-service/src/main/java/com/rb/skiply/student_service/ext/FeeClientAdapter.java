@@ -1,4 +1,4 @@
-package com.rb.skiply.student_service.port;
+package com.rb.skiply.student_service.ext;
 
 import com.rb.skiply.fee_service.openapi.model.FeeDetails;
 import lombok.AllArgsConstructor;

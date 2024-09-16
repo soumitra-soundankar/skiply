@@ -1,4 +1,4 @@
-package com.rb.skiply.payment_service.port;
+package com.rb.skiply.payment_service.ext;
 
 import com.rb.skiply.payment_service.exception.CommunicationException;
 import com.rb.skiply.student_fee.openapi.model.StudentFeePaymentStatusRequest;
@@ -14,7 +14,7 @@ public class StudentClientAdapter {
 
     private final RestClient restClient;
 
-    private static String STUDENT_SERVICE_BASE_URL = "http://localhost:8081/student/";
+    private static final String STUDENT_SERVICE_BASE_URL = "http://localhost:8081/student/";
 
     public void updateStatusToStudentService(final String studentId, final StudentFeePaymentStatusRequest studentFeePaymentStatusRequest ) throws CommunicationException {
 
