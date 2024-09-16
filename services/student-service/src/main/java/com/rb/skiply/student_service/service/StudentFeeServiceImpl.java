@@ -60,7 +60,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
         final Student student = studentRepository.findByStudentId(studentId);
 
         if(student == null) {
-            throw new StudentNotFound("Student with id %s not found."); //TODO: User StringUtils.format
+            throw new StudentNotFound(String.format("Student with id %s not found.", studentId));
         }
 
         final StudentFeeHistory feeHistory = studentFeeHistoryRepository.findByStudentId(studentId, LocalDate.now().getYear());
@@ -86,7 +86,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public StudentFeePaymentResponse initiatePayment(String studentId, StudentFeePaymentRequest studentFeePaymentRequest) throws StudentNotFound, FeeTypesNotFound {
+    public StudentFeePaymentResponse initiatePayment(final String studentId, final StudentFeePaymentRequest studentFeePaymentRequest) throws StudentNotFound, FeeTypesNotFound {
         final Student student = studentRepository.findByStudentId(studentId);
         final StudentFeeDetails studentFeeDetails = new StudentFeeDetails();
 
@@ -133,7 +133,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
         return new StudentFeePaymentResponse();
     }
 
-    private StudentFeePaymentResponse convertPaymentServicePaymentResponse(com.rb.skiply.payment_service.openapi.model.StudentFeePaymentResponse studentFeePaymentResponse) {
+    private StudentFeePaymentResponse convertPaymentServicePaymentResponse(final com.rb.skiply.payment_service.openapi.model.StudentFeePaymentResponse studentFeePaymentResponse) {
         return new StudentFeePaymentResponse()
                 .paymentReference(studentFeePaymentResponse.getPaymentReference())
                 .studentId(studentFeePaymentResponse.getStudentId())
@@ -149,7 +149,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
                 .feeDetails(createFeePayment(studentFeePaymentRequest.getFeeDetails()));
     }
 
-    private List<com.rb.skiply.payment_service.openapi.model.FeePayment> createFeePayment(List<FeePayment> feeDetails) {
+    private List<com.rb.skiply.payment_service.openapi.model.FeePayment> createFeePayment(final List<FeePayment> feeDetails) {
         return feeDetails.stream()
                 .map(feePayment -> new com.rb.skiply.payment_service.openapi.model.FeePayment()
                         .feeAmount(feePayment.getFeeAmount())
@@ -159,7 +159,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public StudentFeeDetails updateFeePaymentStatus(String studentId, StudentFeePaymentStatusRequest studentFeePaymentStatusRequest) {
+    public StudentFeeDetails updateFeePaymentStatus(final String studentId, final StudentFeePaymentStatusRequest studentFeePaymentStatusRequest) {
 
         final StudentFeeHistory feeHistory = studentFeeHistoryRepository.findByStudentId(studentId, LocalDate.now().getYear());
 
@@ -176,7 +176,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
         return studentFeeDetailsMapper.toStudentFeeDetails(feeHistoryUpdated);
     }
 
-    private StudentFeeHistory updateStudentFeeHistory(StudentFeeHistory studentFeeHistory, FeePaymentStatus status, List<StudentFee> applicableStudentFees, Function<StudentFee, Supplier<BigDecimal>> AmountFunction) {
+    private StudentFeeHistory updateStudentFeeHistory(final StudentFeeHistory studentFeeHistory, final FeePaymentStatus status, final List<StudentFee> applicableStudentFees, Function<StudentFee, Supplier<BigDecimal>> AmountFunction) {
         studentFeeHistory.getFees()
                 .forEach(studentFee -> {
                     if(applicableStudentFees.contains(studentFee))
@@ -189,7 +189,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
         return studentFeeHistorySaved;
     }
 
-    private static void updatePaymentStatus(StudentFee studentFee, FeePaymentStatus paymentStatus, Supplier<BigDecimal> AmountToPaid) {
+    private static void updatePaymentStatus(final StudentFee studentFee, final FeePaymentStatus paymentStatus, Supplier<BigDecimal> AmountToPaid) {
         studentFee.setFeePaymentStatus(paymentStatus);
         studentFee.setAmountPaid(AmountToPaid.get());
     }
@@ -207,7 +207,7 @@ public class StudentFeeServiceImpl implements  StudentFeeService {
         studentFeeDetails.setTotalPendingAmount(calculateTotalPendingAmount(studentFeeHistorySaved.getFees()));
     }
 
-    private BigDecimal calculateTotalPendingAmount(List<StudentFee> fees) {
+    private BigDecimal calculateTotalPendingAmount(final List<StudentFee> fees) {
         return fees.stream().map(StudentFee::getFeeAmount).reduce(BigDecimal::add).get();
     }
 }
